@@ -68,24 +68,10 @@ jobs:
       - name: Verify CSS import references
         run: |
           echo "Checking CSS import references..."
-          python3 -c "
-import re
-import os
+          echo "Note: CSS import verification uses grep"
+          echo "Zen-Nebula: nebula/chrome.css -> $(grep -c '@import' zennebula/nebula/chrome.css) imports"
+          echo "Natsumi: natsumi.css -> $(grep -c '@import' natsumi/natsumi.css) imports"
 
-# Check Zen-Nebula imports
-with open('zennebula/nebula/chrome.css') as f:
-    chrome = f.read()
-    imports = re.findall(r'@import url\\(\"(.*?)\\"\\)', chrome)
-    print(f'Zen-Nebula imports: {imports}')
-
-# Check Natsumi imports
-with open('natsumi/natsumi.css') as f:
-    natsumi = f.read()
-    imports = re.findall(r'@import url\\(\"(.*?)\\"\\)', natsumi)
-    print(f'Natsumi imports: {len(imports)} files')
-    for imp in imports:
-        print(f'  + {imp}')
-"
 
       - name: Summary
         run: |

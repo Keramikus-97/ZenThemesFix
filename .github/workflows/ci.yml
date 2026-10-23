@@ -29,56 +29,54 @@ jobs:
           echo "=== Zen-Nebula Checks ==="
           echo "1. Check for broken imports in content.css"
           if grep -q "content/better-pdf" zennebula/nebula/content.css; then
-            echo "❌ FAILED: Broken import still present"
+            echo "FAILED: Broken import still present"
             exit 1
           fi
-          echo "✅ No broken imports"
+          echo "OK: No broken imports"
           
           echo "2. Check mods.json paths"
           if ! grep -q "nebula/chrome.css" zennebula/template/mods.json; then
-            echo "❌ FAILED: Wrong path in mods.json"
+            echo "FAILED: Wrong path in mods.json"
             exit 1
           fi
-          echo "✅ Correct paths"
+          echo "OK: Correct paths"
           
           echo "3. Check JS for event listener cleanup"
           if ! grep -q "removeEventListener" zennebula/zn_js_nebula.uc.js; then
-            echo "❌ FAILED: No event listener cleanup"
+            echo "FAILED: No event listener cleanup"
             exit 1
           fi
-          echo "✅ Event listener cleanup present"
+          echo "OK: Event listener cleanup present"
           
           echo "4. Check CSS fallback for light-dark()"
           if ! grep -q "@supports not (color: light-dark" zennebula/nebula/config.css; then
-            echo "❌ FAILED: No CSS fallback"
+            echo "FAILED: No CSS fallback"
             exit 1
           fi
-          echo "✅ CSS fallback present"
+          echo "OK: CSS fallback present"
           
           echo "=== Natsumi-Browser Checks ==="
           echo "5. Verify @supports in CSS files"
           if ! grep -q "@supports" natsumi/natsumi/modules/welcome.css; then
-            echo "❌ FAILED: Missing @supports in welcome.css"
+            echo "FAILED: Missing @supports in welcome.css"
             exit 1
           fi
-          echo "✅ @supports present"
+          echo "OK: @supports present"
           
           echo "=== All checks passed ==="
 
       - name: Verify CSS import references
         run: |
           echo "Checking CSS import references..."
-          echo "Note: CSS import verification uses grep"
           echo "Zen-Nebula: nebula/chrome.css -> $(grep -c '@import' zennebula/nebula/chrome.css) imports"
           echo "Natsumi: natsumi.css -> $(grep -c '@import' natsumi/natsumi.css) imports"
-
 
       - name: Summary
         run: |
           echo "========================================"
           echo "Zen Themes Fix CI Summary"
           echo "========================================"
-          echo "✅ All automated checks passed"
-          echo "✅ No broken CSS imports"
-          echo "✅ @supports checks verified"
+          echo "All automated checks passed"
+          echo "No broken CSS imports"
+          echo "@supports checks verified"
           echo "========================================"

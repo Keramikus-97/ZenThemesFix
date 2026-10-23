@@ -1,0 +1,13 @@
+diff --git a/nebula/content.css b/nebula/content.css
+index 1234567..89abcde 644
+--- a/nebula/content.css
++++ b/nebula/content.css
+@@ -1,6 +1,4 @@
+-/* This file imports other content modules */
+-@import url("content/better-pdf.css");
+-@import url("content/transparent-settings.css");
++/* content import - required files were removed from repo */
++/* These files were deleted; removing broken imports */
+ 
+ /* Core content styles */
+ body {

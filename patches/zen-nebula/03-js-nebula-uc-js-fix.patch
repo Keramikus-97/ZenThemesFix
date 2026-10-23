@@ -1,0 +1,24 @@
+diff --git a/js/nebula.uc.js b/js/nebula.uc.js
+index 1234567..89abcde 644
+--- a/js/nebula.uc.js
++++ b/js/nebula.uc.js
+@@ -1,5 +1,6 @@
+ const Nebula = {
+   init() {
++    this._gBrowserCheckInterval = null;
+     const check = setInterval(() => {
+       // Check browser state
+     }, 5000);
+@@ -10,4 +11,9 @@ const Nebula = {
+   destroy() {
++    // Clean up event listeners
++    removeEventListener("TabSelect", this);
++    removeEventListener("TabAttrModified", this);
++    
++    // Clear interval to prevent memory leak
++    if (this._gBrowserCheckInterval !== null) {
++      clearInterval(this._gBrowserCheckInterval);
++      this._gBrowserCheckInterval = null;
++    }
+   }
+ };

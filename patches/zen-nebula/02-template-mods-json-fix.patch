@@ -1,0 +1,15 @@
+diff --git a/template/mods.json b/template/mods.json
+index 1234567..89abcde 644
+--- a/template/mods.json
++++ b/template/mods.json
+@@ -1,7 +1,7 @@
+ {
+   "name": "Nebula",
+   "version": "1.0.0",
+   "files": {
+-    "userChrome.css": "https://raw.githubusercontent.com/JustAdumbPrsn/Zen-Nebula/main/userChrome.css",
+-    "userContent.css": "https://raw.githubusercontent.com/JustAdumbPrsn/Zen-Nebula/main/userContent.css"
++    "nebula/chrome.css": "https://raw.githubusercontent.com/JustAdumbPrsn/Zen-Nebula/main/nebula/chrome.css",
++    "nebula/content.css": "https://raw.githubusercontent.com/JustAdumbPrsn/Zen-Nebula/main/nebula/content.css"
+   }
+ }

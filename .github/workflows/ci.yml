@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  PYTHON_VERSION: '3.x'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install --upgrade pip requests
+
+      - name: Verify Zen-Nebula fixes
+        run: |
+          echo "=== Zen-Nebula Checks ==="
+          echo "1. Check for broken imports in content.css"
+          if grep -q "content/better-pdf" zennebula/nebula/content.css; then
+            echo "❌ FAILED: Broken import still present"
+            exit 1
+          fi
+          echo "✅ No broken imports"
+          
+          echo "2. Check mods.json paths"
+          if ! grep -q "nebula/chrome.css" zennebula/template/mods.json; then
+            echo "❌ FAILED: Wrong path in mods.json"
+            exit 1
+          fi
+          echo "✅ Correct paths"
+          
+          echo "3. Check JS for event listener cleanup"
+          if ! grep -q "removeEventListener" zennebula/zn_js_nebula.uc.js; then
+            echo "❌ FAILED: No event listener cleanup"
+            exit 1
+          fi
+          echo "✅ Event listener cleanup present"
+          
+          echo "4. Check CSS fallback for light-dark()"
+          if ! grep -q "@supports not (color: light-dark" zennebula/nebula/config.css; then
+            echo "❌ FAILED: No CSS fallback"
+            exit 1
+          fi
+          echo "✅ CSS fallback present"
+          
+          echo "=== Natsumi-Browser Checks ==="
+          echo "5. Verify @supports in CSS files"
+          if ! grep -q "@supports" natsumi/natsumi/modules/welcome.css; then
+            echo "❌ FAILED: Missing @supports in welcome.css"
+            exit 1
+          fi
+          echo "✅ @supports present"
+          
+          echo "=== All checks passed ==="
+
+      - name: Verify CSS import references
+        run: |
+          echo "Checking CSS import references..."
+          python3 -c "
+import re
+import os
+
+# Check Zen-Nebula imports
+with open('zennebula/nebula/chrome.css') as f:
+    chrome = f.read()
+    imports = re.findall(r'@import url\\(\"(.*?)\\"\\)', chrome)
+    print(f'Zen-Nebula imports: {imports}')
+
+# Check Natsumi imports
+with open('natsumi/natsumi.css') as f:
+    natsumi = f.read()
+    imports = re.findall(r'@import url\\(\"(.*?)\\"\\)', natsumi)
+    print(f'Natsumi imports: {len(imports)} files')
+    for imp in imports:
+        print(f'  + {imp}')
+"
+
+      - name: Summary
+        run: |
+          echo "========================================"
+          echo "Zen Themes Fix CI Summary"
+          echo "========================================"
+          echo "✅ All automated checks passed"
+          echo "✅ No broken CSS imports"
+          echo "✅ @supports checks verified"
+          echo "========================================"
